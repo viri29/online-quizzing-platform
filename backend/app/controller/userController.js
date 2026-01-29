@@ -27,6 +27,9 @@ const register = async (req, res) => {
         if (typeof lastName !== 'string' || lastName.trim() === '') {
             return res.status(400).json({ error: 'Last name is invalid.' });
         }
+        if (typeof email !== 'string' || email.trim() === '') {
+            return res.status(400).json({ error: 'Email is invalid.' });
+        }
 
         const existingUser = await User.findOne({ username })
         if (existingUser) { 
@@ -46,6 +49,7 @@ const register = async (req, res) => {
         });
 
         await newUser.save();
+
         return res.status(201).json({
             message: 'User registered successfully!',
             User: {
@@ -59,6 +63,7 @@ const register = async (req, res) => {
             console.error(error);
             res.status(500).json({ error: 'An error occured while registering. Please try again.'})
         }
+        console.log("REGISTER BODY:", req.body);
 }
 
 
