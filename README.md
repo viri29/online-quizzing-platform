@@ -66,7 +66,7 @@ MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<dbname>
 ```
 cd online-quizzing-platform
 ```
-4. Install dependencies:
+4. Install dependencies
 ```
 npm install
 ```
@@ -79,4 +79,10 @@ JWT_SECRET=your_secret_key
 ```
 node backend/server.js
 ```
-  
+
+## Future Improvements
+1. Support additional media types for questions and answers (e.g., images, videos, audio clips).
+2. Separate and distinctify personally-made quizzes and quizzes made by other users.
+3. Store past scores and track progress.
+4. Categorize quizzes (e.g., Easy/Medium/Hard, by topic, course, or question type) in order to improve discoverability.
+5. Allow users to set a custom time limit for quiz completion.
