@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 export default function Account() {
   const { user, logout } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
-      alert('You are not logged in.');
+      toast.error('You are not logged in.');
       navigate('/login');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -16,7 +18,7 @@ export default function Account() {
 
   const handleSignOut = () => {
     logout();
-    alert('You have been signed out.');
+    toast.success('You have been signed out.');
     navigate('/login');
   };
 

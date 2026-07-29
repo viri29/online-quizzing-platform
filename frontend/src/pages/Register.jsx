@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { API_URL } from '../api';
 
 const initialForm = {
@@ -13,12 +14,13 @@ const initialForm = {
 
 export default function Register() {
   const { user } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
 
   useEffect(() => {
     if (user) {
-      alert('You are already logged in. Redirecting to the home page...');
+      toast.success('You are already logged in. Redirecting to the home page...');
       navigate('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -38,10 +40,10 @@ export default function Register() {
 
     const data = await res.json();
     if (res.ok) {
-      alert('Registration successful!');
+      toast.success('Registration successful!');
       navigate('/login');
     } else {
-      alert('Error: ' + data.error);
+      toast.error(data.error);
     }
   };
 

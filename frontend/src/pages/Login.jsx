@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { API_URL } from '../api';
 
 export default function Login() {
   const { user, login } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (user) {
-      alert('You are already logged in. Redirecting to the home page...');
+      toast.success('You are already logged in. Redirecting to the home page...');
       navigate('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -29,10 +31,10 @@ export default function Login() {
     const data = await res.json();
     if (res.ok) {
       login(data.user, data.token);
-      alert('Login successful!');
+      toast.success('Login successful!');
       navigate('/account');
     } else {
-      alert(data.error);
+      toast.error(data.error);
     }
   };
 

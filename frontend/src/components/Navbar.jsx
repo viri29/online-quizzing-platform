@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const { user } = useAuth();
+
+  const linkClass = ({ isActive }) => (isActive ? 'active' : undefined);
 
   return (
     <header>
@@ -11,18 +13,18 @@ export default function Navbar() {
         <ul className="nav-links">
           {!user && (
             <li id="login-item">
-              <Link to="/login" id="login-link">Login</Link>
+              <NavLink to="/login" id="login-link" className={linkClass}>Login</NavLink>
             </li>
           )}
           {!user && (
             <li id="register-item">
-              <Link to="/register" id="register-link">Register</Link>
+              <NavLink to="/register" id="register-link" className={linkClass}>Register</NavLink>
             </li>
           )}
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/makequiz">Make a Quiz</Link></li>
-          <li><Link to="/takequiz">Take Quiz</Link></li>
-          <li><Link to="/account">Account</Link></li>
+          <li><NavLink to="/" end className={linkClass}>Home</NavLink></li>
+          <li><NavLink to="/makequiz" className={linkClass}>Make a Quiz</NavLink></li>
+          <li><NavLink to="/takequiz" className={linkClass}>Take Quiz</NavLink></li>
+          <li><NavLink to="/account" className={linkClass}>Account</NavLink></li>
         </ul>
       </nav>
     </header>

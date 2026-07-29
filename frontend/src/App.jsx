@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -8,17 +8,21 @@ import MakeQuiz from './pages/MakeQuiz';
 import TakeQuiz from './pages/TakeQuiz';
 
 function App() {
+  const location = useLocation();
+
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/makequiz" element={<MakeQuiz />} />
-        <Route path="/takequiz" element={<TakeQuiz />} />
-      </Routes>
+      <div className="page-transition" key={location.pathname}>
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/makequiz" element={<MakeQuiz />} />
+          <Route path="/takequiz" element={<TakeQuiz />} />
+        </Routes>
+      </div>
     </>
   );
 }
