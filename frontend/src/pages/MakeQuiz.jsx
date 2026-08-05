@@ -4,6 +4,8 @@ import { API_URL } from '../api';
 import { useToast } from '../context/ToastContext';
 import SaveQuizModal from './SaveQuizModal';
 
+const OPTION_FIELDS = { A: 'optA', B: 'optB', C: 'optC', D: 'optD' };
+
 function emptyQuestion() {
   return {
     question: '',
@@ -26,7 +28,7 @@ function validateQuestions(questions) {
       return 'Fill in all four options for each multiple-choice question.';
     }
     if (!['A', 'B', 'C', 'D'].includes(q.mcAnswer.trim().toUpperCase())) {
-      return 'Correct Answer must be A, B, C, or D.';
+      return 'Select the correct answer for each multiple-choice question.';
     }
   }
   return null;
@@ -131,9 +133,15 @@ export default function MakeQuiz() {
       <h2 className="quiz-title">Create a Quiz</h2>
       <form id="quiz-form" onSubmit={(e) => e.preventDefault()}>
         <div id="questions-container">
+          {questions.length === 0 && (
+            <div className="mq-empty-state">
+              <p>No questions yet</p>
+              <p className="mq-empty-sub">Click "Add Question" below to start building your quiz.</p>
+            </div>
+          )}
           {questions.map((q, i) => (
             <div
-              className={`question-block draggable-block ${dragIndex === i ? 'dragging' : ''}`}
+              className={`question-block draggable-block mq-card ${dragIndex === i ? 'dragging' : ''}`}
               key={i}
               draggable
               onDragStart={() => setDragIndex(i)}
@@ -141,54 +149,78 @@ export default function MakeQuiz() {
               onDrop={handleDrop(i)}
               onDragEnd={() => setDragIndex(null)}
             >
-              <span className="drag-handle" title="Drag to reorder">⠿</span>
-              <label>Question {i + 1}:</label>
-              <br />
-              <input
-                type="text"
-                placeholder="Enter your question"
-                value={q.question}
-                onChange={(e) => updateQuestion(i, { question: e.target.value })}
-              />
-              <br />
-              <label>Type:</label>
-              <select value={q.type} onChange={(e) => handleTypeChange(i, e.target.value)}>
-                <option value="truefalse">True/False</option>
-                <option value="multiple">Multiple Choice</option>
-              </select>
-              <div>
-                {q.type === 'truefalse' ? (
-                  <>
-                    <label>Correct Answer:</label>
-                    <select value={q.answer} onChange={(e) => updateQuestion(i, { answer: e.target.value })}>
-                      <option value="true">True</option>
-                      <option value="false">False</option>
-                    </select>
-                  </>
-                ) : (
-                  <>
-                    <label>Option A:</label>{' '}
-                    <input type="text" value={q.optA} onChange={(e) => updateQuestion(i, { optA: e.target.value })} />
-                    <br />
-                    <label>Option B:</label>{' '}
-                    <input type="text" value={q.optB} onChange={(e) => updateQuestion(i, { optB: e.target.value })} />
-                    <br />
-                    <label>Option C:</label>{' '}
-                    <input type="text" value={q.optC} onChange={(e) => updateQuestion(i, { optC: e.target.value })} />
-                    <br />
-                    <label>Option D:</label>{' '}
-                    <input type="text" value={q.optD} onChange={(e) => updateQuestion(i, { optD: e.target.value })} />
-                    <br />
-                    <label>Correct Answer (A/B/C/D):</label>
-                    <input
-                      type="text"
-                      maxLength={1}
-                      value={q.mcAnswer}
-                      onChange={(e) => updateQuestion(i, { mcAnswer: e.target.value })}
-                    />
-                  </>
-                )}
+              <div className="mq-card-header">
+                <span className="mq-badge">{i + 1}</span>
+                <input
+                  type="text"
+                  className="mq-question-input"
+                  placeholder="Type your question…"
+                  value={q.question}
+                  onChange={(e) => updateQuestion(i, { question: e.target.value })}
+                />
+                <span className="drag-handle" title="Drag to reorder">⠿⠿</span>
               </div>
+
+              <div className="mq-segmented" role="tablist" aria-label="Question type">
+                <button
+                  type="button"
+                  className={q.type === 'truefalse' ? 'active' : ''}
+                  onClick={() => handleTypeChange(i, 'truefalse')}
+                >
+                  True / False
+                </button>
+                <button
+                  type="button"
+                  className={q.type === 'multiple' ? 'active' : ''}
+                  onClick={() => handleTypeChange(i, 'multiple')}
+                >
+                  Multiple Choice
+                </button>
+              </div>
+
+              {q.type === 'truefalse' ? (
+                <div className="mq-tf-toggle">
+                  <button
+                    type="button"
+                    className={`mq-tf-btn ${q.answer === 'true' ? 'selected' : ''}`}
+                    onClick={() => updateQuestion(i, { answer: 'true' })}
+                  >
+                    True
+                  </button>
+                  <button
+                    type="button"
+                    className={`mq-tf-btn ${q.answer === 'false' ? 'selected' : ''}`}
+                    onClick={() => updateQuestion(i, { answer: 'false' })}
+                  >
+                    False
+                  </button>
+                </div>
+              ) : (
+                <div className="mq-options">
+                  {Object.entries(OPTION_FIELDS).map(([letter, field]) => {
+                    const isCorrect = q.mcAnswer.trim().toUpperCase() === letter;
+                    return (
+                      <div className="mq-option-row" key={letter}>
+                        <button
+                          type="button"
+                          className={`mq-option-badge ${isCorrect ? 'correct' : ''}`}
+                          onClick={() => updateQuestion(i, { mcAnswer: letter })}
+                          title={`Mark ${letter} as the correct answer`}
+                        >
+                          {letter}
+                        </button>
+                        <input
+                          type="text"
+                          placeholder={`Option ${letter}`}
+                          value={q[field]}
+                          onChange={(e) => updateQuestion(i, { [field]: e.target.value })}
+                        />
+                      </div>
+                    );
+                  })}
+                  <p className="mq-hint">Click a letter to mark the correct answer.</p>
+                </div>
+              )}
             </div>
           ))}
         </div>

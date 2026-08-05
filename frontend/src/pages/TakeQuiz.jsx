@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { API_URL } from '../api';
 import ScoreDonut from '../components/ScoreDonut';
 
 export default function TakeQuiz() {
+  const location = useLocation();
   const [quizzes, setQuizzes] = useState([]);
   const [loadError, setLoadError] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState('');
@@ -25,6 +27,14 @@ export default function TakeQuiz() {
     }
     fetchQuizzes();
   }, []);
+
+  useEffect(() => {
+    if (quizzes.length > 0 && location.state?.quizId && selectedIndex === '') {
+      const idx = quizzes.findIndex((q) => q._id === location.state.quizId);
+      if (idx !== -1) selectQuiz(idx);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quizzes]);
 
   const selectedQuiz = selectedIndex !== '' ? quizzes[selectedIndex] : null;
   const totalQuestions = selectedQuiz ? selectedQuiz.questions.length : 0;
