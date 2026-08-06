@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import session from 'express-session';
 import connectDB from './db.js';
 import apiRouter from './routes/api.js';
@@ -8,11 +10,14 @@ import apiRouter from './routes/api.js';
 dotenv.config();
 connectDB();
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const frontendDist = path.join(__dirname, '../frontend/dist');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
-    origin: ['http://localhost:3000', 'http://127.0.0.1:5500', 'http://localhost:5500'],
+    origin: ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5500', 'http://localhost:5500'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -35,16 +40,19 @@ app.use(
     })
 );
 
-//sample route for text response
-app.get('/', (req, res) => {
-    res.send('Hello World');
-});
+app.use(express.static(frontendDist));
 
 app.use('/api', apiRouter);
 
 //sample protected route
 app.post('/api/user', (req, res) => {
     res.json({ message: "User created successfully!" });
+});
+
+// Client-side routing fallback: let React Router handle any non-API route.
+app.get('/*splat', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
 //start server
