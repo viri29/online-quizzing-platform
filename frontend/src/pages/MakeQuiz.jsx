@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../api';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import SaveQuizModal from './SaveQuizModal';
 
@@ -51,6 +52,7 @@ export default function MakeQuiz() {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const addQuestion = () => setQuestions((prev) => [...prev, emptyQuestion()]);
 
@@ -110,7 +112,7 @@ export default function MakeQuiz() {
     const res = await fetch(`${API_URL}/api/quizzes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, category, questions: payload }),
+      body: JSON.stringify({ title, category, questions: payload, createdBy: user?.userId }),
     });
 
     const data = await res.json();

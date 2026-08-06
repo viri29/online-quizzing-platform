@@ -3,14 +3,15 @@ import Quiz from '../model/Quiz.js';
 
 const submitResult = async (req, res) => {
   try {
-    const { quizId, answers, userId = 'anonymous' } = req.body;
+    const { quizId, answers, userId } = req.body;
 
     const quiz = await Quiz.findById(quizId);
     if (!quiz) return res.status(404).json({ error: 'Quiz not found.' });
 
     let score = 0;
     quiz.questions.forEach((q, idx) => {
-      if (answers[idx] === q.correctAnswer) {
+      const answer = answers.find((a) => a.questionIndex === idx);
+      if (answer && answer.selectedOption === q.correctAnswer) {
         score++;
       }
     });

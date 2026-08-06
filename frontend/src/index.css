@@ -728,6 +728,77 @@ button:disabled {
 
 .account-page {
   width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  gap: 48px;
+}
+
+.account-section {
+  width: 100%;
+}
+
+.account-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--color-text);
+}
+
+.account-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.history-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.history-quiz-group {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 18px 22px;
+}
+
+.history-quiz-group h3 {
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.history-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.history-score {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.history-date {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
 }
 
 .account-info {
@@ -751,7 +822,8 @@ button:disabled {
 }
 
 .sign-out-button {
-  margin-top: 20px;
+  display: block;
+  margin: 20px auto 0;
   padding: 10px 20px;
   background-color: var(--color-primary);
   color: white;

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { API_URL } from '../api';
+import { useAuth } from '../context/AuthContext';
 import ScoreDonut from '../components/ScoreDonut';
 
 export default function TakeQuiz() {
   const location = useLocation();
+  const { user } = useAuth();
   const [quizzes, setQuizzes] = useState([]);
   const [loadError, setLoadError] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState('');
@@ -76,6 +78,22 @@ export default function TakeQuiz() {
 
       const data = await res.json();
       setResult({ score: data.score, total: data.total });
+
+      if (user) {
+        try {
+          const formattedAnswers = answerArray.map((selectedOption, questionIndex) => ({
+            questionIndex,
+            selectedOption,
+          }));
+          await fetch(`${API_URL}/api/results`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quizId: selectedQuiz._id, answers: formattedAnswers, userId: user.userId }),
+          });
+        } catch (err) {
+          console.error('Error saving result history:', err);
+        }
+      }
     } catch (err) {
       console.error('Error submitting quiz:', err);
       setResult('error');

@@ -50,7 +50,12 @@ const quizSchema = new mongoose.Schema({
       },
       message: 'A quiz must have at least one question.'
     }
-  }
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false,
+  },
 });
 
 //calculate totalQuestions automatically from array

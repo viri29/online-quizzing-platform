@@ -2,7 +2,7 @@ import Quiz from '../model/Quiz.js';
 
 const createQuiz = async (req,res) => {
     try {
-        const { title, questions, category } = req.body;
+        const { title, questions, category, createdBy } = req.body;
         if(!title || !questions || !category) {
             return res.status(400).json({ error:'Please complete all fields.'});
         }
@@ -21,6 +21,7 @@ const createQuiz = async (req,res) => {
             title,
             questions,
             category,
+            createdBy,
         });
 
         res.status(201).json({ message: 'Quiz created successfully!', quiz: newQuiz });
